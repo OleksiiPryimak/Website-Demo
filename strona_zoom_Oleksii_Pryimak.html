@@ -1,0 +1,634 @@
+<!DOCTYPE html>
+<html lang="pl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Oleksii Pryimak - Portfolio</title>
+    
+    <!-- Import czcionek z Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Fira+Code:wght@300;400;600&display=swap" rel="stylesheet">
+    
+    <!-- Ikony (FontAwesome) -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+
+    <style>
+        /* --- CSS VARIABLES & RESET --- */
+        :root {
+            --bg-color: #050505;
+            --text-color: #e0e0e0;
+            --accent-color: #ff9f1c; /* Pomarańczowy */
+            --grid-line-color: #333;
+            --overlay-color: rgba(0, 0, 0, 0.85); /* Mocniejsze przyciemnienie dla minimalizmu */
+            --overlay-color-light: rgba(0, 0, 0, 0.4); /* Lżejsze przyciemnienie dla sekcji kolorowych */
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            background-color: var(--bg-color);
+            color: var(--text-color);
+            font-family: 'Fira Code', monospace; /* Jedna czcionka wszędzie */
+            overflow-x: hidden;
+            scrollbar-width: none; 
+            -ms-overflow-style: none;
+        }
+
+        body::-webkit-scrollbar { 
+            display: none; 
+        }
+
+        a {
+            text-decoration: none;
+            color: inherit;
+            transition: color 0.3s, text-shadow 0.3s;
+        }
+
+        /* Hover na tekst - zmiana na pomarańczowy */
+        p:hover, h1:hover, h2:hover, h3:hover, li:hover, span:hover {
+            color: var(--accent-color);
+            transition: color 0.3s ease;
+            cursor: default;
+        }
+
+        /* --- LANGUAGE SWITCH (Top Right) --- */
+        .lang-container {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            z-index: 1001;
+            display: flex;
+        }
+
+        .lang-btn {
+            width: 40px;
+            height: 40px;
+            background: rgba(0, 0, 0, 0.5);
+            border: 1px solid var(--text-color);
+            color: var(--text-color);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            font-size: 0.8rem;
+            transition: all 0.3s;
+        }
+
+        .lang-btn.active {
+            background: var(--accent-color);
+            color: #000;
+            border-color: var(--accent-color);
+            font-weight: bold;
+        }
+
+        .lang-btn:first-child {
+            border-right: none;
+        }
+
+        .lang-btn:hover {
+            background: rgba(255, 255, 255, 0.1);
+        }
+
+        /* --- NAVIGATION & PROGRESS (Right Side) --- */
+        .nav-container {
+            position: fixed;
+            top: 50%;
+            right: 20px;
+            transform: translateY(-50%);
+            z-index: 1000;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .nav-arrow {
+            color: var(--text-color);
+            cursor: pointer;
+            font-size: 1.2rem;
+            padding: 10px;
+            transition: color 0.3s;
+            background: rgba(0,0,0,0.5);
+            border: 1px solid #333;
+        }
+
+        .nav-arrow:hover {
+            color: var(--accent-color);
+            border-color: var(--accent-color);
+        }
+
+        .progress-bar {
+            display: flex;
+            flex-direction: column;
+            gap: 0; /* Connected lines */
+        }
+
+        .progress-segment {
+            width: 6px;
+            height: 40px;
+            background-color: #333;
+            transition: background-color 0.4s ease, height 0.3s;
+            cursor: pointer;
+            border: 1px solid #000;
+        }
+
+        .progress-segment.active {
+            background-color: var(--accent-color);
+            box-shadow: 0 0 10px var(--accent-color);
+        }
+
+        /* --- SECTIONS LAYOUT --- */
+        section {
+            min-height: 100vh;
+            width: 100%;
+            position: relative;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            padding: 80px 40px; /* Więcej paddingu góra/dół */
+            background-size: cover;
+            background-position: center;
+            background-attachment: fixed;
+            overflow: hidden;
+        }
+
+        /* Global Grayscale for Backgrounds */
+        .bg-image {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: 0;
+            background-size: cover;
+            background-position: center;
+            background-attachment: fixed;
+            filter: grayscale(35%);
+            transition: filter 0.5s ease;
+        }
+
+        /* Colored backgrounds for specific sections */
+        .bg-color {
+            filter: grayscale(0%) !important;
+        }
+        
+        /* Specific Background Images */
+        .bg-hero { background-image: url('https://images.unsplash.com/photo-1462332420958-a05d1e002413?q=80&w=3007&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D'); }
+        .bg-prog { background-image: url('https://images.unsplash.com/photo-1462332420958-a05d1e002413?q=80&w=3007&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D'); }
+        .bg-graph { background-image: url('https://images.unsplash.com/photo-1462332420958-a05d1e002413?q=80&w=3007&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D'); }
+        .bg-art { background-image: url('https://images.unsplash.com/photo-1462332420958-a05d1e002413?q=80&w=3007&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D'); }
+        .bg-contact { background-image: url('https://images.unsplash.com/photo-1525547719571-a2d4ac8945e2?q=80&w=928&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D'); }
+
+        .overlay {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: var(--overlay-color);
+            z-index: 1;
+        }
+
+        .overlay-light {
+            background: var(--overlay-color-light);
+        }
+
+        /* Content Container */
+        .container {
+            position: relative;
+            z-index: 2;
+            width: 100%;
+            max-width: 1200px; /* Ujednolicona szerokość */
+            text-align: center;
+        }
+
+        /* --- ANIMATIONS --- */
+        .fade-in-section {
+            opacity: 0;
+            transform: translateY(20px);
+            transition: opacity 1s ease-out, transform 1s ease-out;
+            will-change: opacity, transform; /* Optymalizacja wydajności */
+        }
+
+        .fade-in-section.is-visible {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        /* --- HERO SECTION --- */
+        #hero h1 {
+            font-size: 4rem;
+            margin-bottom: 20px;
+            letter-spacing: -2px;
+            text-shadow: 0 4px 10px rgba(0,0,0,0.5);
+        }
+
+        #hero p {
+            font-size: 1.1rem;
+            max-width: 800px;
+            margin: 0 auto;
+            line-height: 1.8;
+            border-left: 2px solid var(--accent-color);
+            padding-left: 20px;
+            text-align: left;
+            background: rgba(0,0,0,0.3);
+            padding-top: 10px;
+            padding-bottom: 10px;
+        }
+
+        .hero-socials {
+            margin-top: 40px;
+            display: flex;
+            gap: 20px;
+            justify-content: center;
+        }
+
+        .hero-socials a {
+            font-size: 1.5rem;
+            border: 1px solid var(--text-color);
+            padding: 10px 20px;
+            transition: all 0.3s;
+            background: rgba(0,0,0,0.5);
+        }
+
+        .hero-socials a:hover {
+            border-color: var(--accent-color);
+            color: var(--accent-color);
+            box-shadow: 0 0 10px var(--accent-color);
+        }
+
+
+        /* --- UNIFIED TEMPLATE FOR SKILLS (Grid System) --- */
+        .section-title {
+            font-size: 3rem;
+            text-transform: uppercase;
+            margin-bottom: 40px;
+            border-bottom: 1px solid var(--grid-line-color);
+            padding-bottom: 20px;
+            width: 100%;
+            text-align: left;
+        }
+
+        .skills-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr 1fr;
+            width: 100%;
+            border-top: 1px solid var(--grid-line-color);
+            border-bottom: 1px solid var(--grid-line-color);
+            margin-bottom: 40px;
+        }
+
+        .grid-item {
+            padding: 30px 20px;
+            border-right: 1px solid var(--grid-line-color);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            text-align: center;
+            font-size: 1rem;
+            position: relative;
+            transition: background 0.3s;
+            background: rgba(0,0,0,0.2);
+        }
+
+        .grid-item:last-child {
+            border-right: none;
+        }
+
+        /* Special Styling for Link Block */
+        .grid-item.link-block {
+            border: 1px solid var(--accent-color); /* Wyróżnienie */
+            color: var(--accent-color);
+            font-weight: bold;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .grid-item.link-block:hover {
+            background: var(--accent-color);
+            color: #000;
+            box-shadow: 0 0 20px var(--accent-color);
+        }
+
+        /* Description under grid */
+        .section-desc {
+            text-align: justify;
+            margin-bottom: 40px;
+            line-height: 1.6;
+            color: #aaa;
+        }
+
+        /* --- IMAGES & CAROUSEL --- */
+        .content-image {
+            width: 100%;
+            max-width: 800px;
+            height: 400px;
+            object-fit: cover;
+            margin: 0 auto;
+            display: block;
+            filter: grayscale(100%); /* Czarno-białe domyślnie */
+            transition: filter 0.5s ease;
+            border: 1px solid #333;
+        }
+
+        .content-image:hover {
+            filter: grayscale(0%); /* Kolor po najechaniu */
+        }
+
+        /* Carousel overrides */
+        .carousel {
+            width: 100%;
+            max-width: 800px;
+            height: 400px;
+            margin: 0 auto;
+            position: relative;
+            overflow: hidden;
+            border: 1px solid #333;
+        }
+
+        .carousel-slide img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            filter: grayscale(100%);
+            transition: filter 0.5s ease;
+            border-radius: 0; 
+        }
+        
+        .carousel-slide img:hover {
+            filter: grayscale(0%);
+        }
+
+        /* --- CONTACT SECTION --- */
+        .contact-box {
+            border: 1px solid var(--grid-line-color);
+            padding: 60px;
+            display: inline-block;
+            transition: border-color 0.3s;
+            background: rgba(0,0,0,0.6);
+            backdrop-filter: blur(5px);
+        }
+        
+        .contact-box:hover {
+            border-color: var(--accent-color);
+        }
+
+        /* --- RESPONSIVE --- */
+        @media (max-width: 768px) {
+            .skills-grid {
+                grid-template-columns: 1fr;
+            }
+            .grid-item {
+                border-right: none;
+                border-bottom: 1px solid var(--grid-line-color);
+            }
+            .grid-item:last-child {
+                border-bottom: none;
+            }
+            .section-title {
+                font-size: 2rem;
+            }
+            #hero h1 {
+                font-size: 2.5rem;
+            }
+            .content-image, .carousel {
+                height: 250px;
+            }
+            .nav-container {
+                right: 10px;
+            }
+            .progress-segment {
+                height: 30px;
+                width: 4px;
+            }
+        }
+    </style>
+</head>
+<body>
+
+    <!-- Language Switcher (Top Right) -->
+    <div class="lang-container">
+        <div class="lang-btn active" id="btn-pl" onclick="switchLanguage('pl')">PL</div>
+        <div class="lang-btn" id="btn-en" onclick="switchLanguage('en')">EN</div>
+    </div>
+
+    <!-- Right Navigation & Progress -->
+    <div class="nav-container">
+        <div class="nav-arrow" onclick="scrollToSection('up')">
+            <i class="fas fa-chevron-up"></i>
+        </div>
+        
+        <div class="progress-bar">
+            <!-- 5 segments corresponding to 5 sections -->
+            <div class="progress-segment" data-target="hero" onclick="scrollToId('hero')"></div>
+            <div class="progress-segment" data-target="programming" onclick="scrollToId('programming')"></div>
+            <div class="progress-segment" data-target="graphics" onclick="scrollToId('graphics')"></div>
+            <div class="progress-segment" data-target="art" onclick="scrollToId('art')"></div>
+            <div class="progress-segment" data-target="contact" onclick="scrollToId('contact')"></div>
+        </div>
+
+        <div class="nav-arrow" onclick="scrollToSection('down')">
+            <i class="fas fa-chevron-down"></i>
+        </div>
+    </div>
+
+    <!-- 1. HERO SECTION -->
+    <section id="hero">
+        <div class="bg-image bg-hero bg-color"></div>
+        <div class="overlay overlay-light"></div>
+        <div class="container fade-in-section">
+            <h1 data-lang-pl="Cześć" data-lang-en="Hello">Cześć</h1>
+            <p data-lang-pl="Nazywam się Oleksii. Jestem specjalistą branży kreatywnej i programistą Python. Posiadam ponad 20-letnie doświadczenie w sektorze kreatywnym oraz bogate kompetencje w projektowaniu graficznym dla branż e-commerce, sztuki i architektury." 
+               data-lang-en="My name is Oleksii. I am a Creative Professional & Python Developer. With over 20 years in the creative sector, I possess extensive expertise in graphic design for the e-commerce, art, and architecture industries. ">
+                nazywam się Oleksii. Jestem specjalistą branży kreatywnej i programistą Python. Posiadam ponad 20-letnie doświadczenie w sektorze kreatywnym oraz bogate kompetencje w projektowaniu graficznym dla branż e-commerce, sztuki i architektury.
+            </p>
+            
+            <div class="hero-socials">
+                <a href="https://www.linkedin.com/in/oleksii-pryimak-42314186/" target="_blank">LinkedIn</a>
+                <a href="https://github.com/OleksiiPryimak" target="_blank">GitHub</a>
+            </div>
+        </div>
+    </section>
+
+    <!-- 2. PROGRAMMING SECTION -->
+    <section id="programming">
+        <div class="bg-image bg-prog"></div>
+        <div class="overlay"></div>
+        <div class="container fade-in-section">
+            <h2 class="section-title" data-lang-pl="Programowanie" data-lang-en="Programming">Programowanie</h2>
+            
+            <div class="skills-grid">
+                <div class="grid-item" data-lang-pl="Główne narzędzie: Python" data-lang-en="Main Tool: Python">Główne narzędzie: Python</div>
+                <div class="grid-item" data-lang-pl="Podstawowy: HTML, CSS, JavaScript" data-lang-en="Basics: HTML, CSS, JavaScript">HTML, CSS, JavaScript</div>
+                <a href="https://github.com/OleksiiPryimak" class="grid-item link-block" data-lang-pl="GitHub Profile" data-lang-en="GitHub Profile">GitHub Profile</a>
+            </div>
+
+            <div class="section-desc" data-lang-pl="Kursy i certyfikaty: Generative AI Leader/2026, Basics: HTML, CSS, JavaScript/2025, Practical Python - Course/2023, Creative Skills for Innovation - Workshop/PFR & Google/2019"
+                 data-lang-en="Courses & Certificates: Generative AI Leader/2026, Basics: HTML, CSS, JavaScript/2025, Practical Python - Course/2023, Creative Skills for Innovation - Workshop/PFR & Google/2019">
+                 Kursy i certyfikaty: Generative AI Leader/2026, Basics: HTML, CSS, JavaScript/2025, Practical Python - Course/2023, Creative Skills for Innovation - Workshop/PFR & Google/2019
+            </div>
+
+            <img src="https://images.unsplash.com/photo-1571171637578-41bc2dd41cd2?q=80&w=1740&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D" alt="Code" class="content-image">
+        </div>
+    </section>
+
+    <!-- 3. GRAPHICS SECTION -->
+    <section id="graphics">
+        <div class="bg-image bg-graph"></div>
+        <div class="overlay"></div>
+        <div class="container fade-in-section">
+            <h2 class="section-title" data-lang-pl="Grafika Komputerowa" data-lang-en="Computer Graphics">Grafika Komputerowa</h2>
+            
+            <div class="skills-grid">
+                <div class="grid-item" data-lang-pl="Adobe Photoshop" data-lang-en="Adobe Photoshop">Adobe Photoshop</div>
+                <div class="grid-item" data-lang-pl="Zautomatyzowane Akcje PS" data-lang-en="Automated Actions PS">Zautomatyzowane Akcje PS</div>
+                <a href="https://oleksii.pryimak.pl/portfolio/grafika-komputerowa" class="grid-item link-block" data-lang-pl="Zobacz Portfolio" data-lang-en="View Portfolio">Zobacz Portfolio</a>
+            </div>
+
+            <div class="section-desc" data-lang-pl="Pracowałem również z oprogramowaniem: Affinity, Inkscape (grafika wektorowa), Blender (grafika 3D), AutoCAD, NanoCAD (projekty CAD) oraz HitFilm Express (edycja wideo)."
+                 data-lang-en="I also worked with software: Affinity, Inkscape (vector graphics), Blender (3D graphics), AutoCAD, NanoCAD (CAD projects), and HitFilm Express (video editing).">
+                 Pracowałem również z oprogramowaniem: Affinity, Inkscape (grafika wektorowa), Blender (grafika 3D), AutoCAD, NanoCAD (projekty CAD) oraz HitFilm Express (edycja wideo).
+            </div>
+
+            <img src="https://images.unsplash.com/photo-1615889898166-b9ac0bdfbb2c?q=80&w=2789&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D" alt="Graphics" class="content-image">
+            </div>
+        </div>
+    </section>
+
+    <!-- 4. ART SECTION -->
+    <section id="art">
+        <div class="bg-image bg-art"></div>
+        <div class="overlay"></div>
+        <div class="container fade-in-section">
+            <h2 class="section-title" data-lang-pl="Artystyczne Malowanie" data-lang-en="Mural art">Artystyczne Malowanie</h2>
+            
+            <div class="skills-grid">
+                <div class="grid-item">Murale</div>
+                <div class="grid-item">Spray Art</div>
+                <a href="https://oleksii.pryimak.pl/portfolio/artystyczne-malowanie" class="grid-item link-block" data-lang-pl="Galeria Prac" data-lang-en="Art Gallery">Galeria Prac</a>
+            </div>
+
+            <div class="section-desc" data-lang-pl="Moje portfolio obejmuje ponad 20 000 m² zrealizowanych projektów. Pierwszy komercyjny mural: 2004 r. Najwyższa realizacja: ok. 90 m wysokości. Największy pojedynczy projekt: ok. 2 000 m²."
+                 data-lang-en="My portfolio includes over 20,000 m² of completed projects. First commercial mural: 2004. Highest realization: approx. 90 m high. Largest single project: approx. 2,000 m².">
+                 Moje portfolio obejmuje ponad 20 000 m² zrealizowanych projektów. Pierwszy komercyjny mural: 2004 r. Najwyższa realizacja: ok. 90 m wysokości. Największy pojedynczy projekt: ok. 2 000 m².
+            </div>
+
+            <img src="https://lh3.googleusercontent.com/u/0/d/1YETR4M4UPvN9HUVTKLHNpFzJNuyGrD93" alt="Art" class="content-image">
+        </div>
+    </section>
+
+    <!-- 5. CONTACT SECTION -->
+    <section id="contact">
+        <div class="bg-image bg-contact bg-color"></div>
+        <div class="overlay overlay-light"></div>
+        <div class="container fade-in-section">
+            <h2 class="section-title" style="text-align: center; border: none;" data-lang-pl="Kontakt" data-lang-en="Contact">Kontakt</h2>
+            
+            <div class="contact-box">
+                <i class="fas fa-envelope" style="font-size: 3rem; color: var(--accent-color); margin-bottom: 20px;"></i>
+                <br>
+                <a href="mailto:oleksii@pryimak.pl" style="font-size: 1.5rem;">oleksii@pryimak.pl</a>
+            </div>
+        </div>
+    </section>
+
+    <script>
+        // --- LANGUAGE SWITCHING ---
+        function switchLanguage(lang) {
+            document.getElementById('btn-pl').classList.toggle('active', lang === 'pl');
+            document.getElementById('btn-en').classList.toggle('active', lang === 'en');
+            document.querySelectorAll(`[data-lang-${lang}]`).forEach(el => {
+                el.innerText = el.getAttribute(`data-lang-${lang}`);
+            });
+        }
+
+        // --- NAVIGATION & OBSERVER ---
+        const sectionsIds = ['hero', 'programming', 'graphics', 'art', 'contact'];
+        
+        function scrollToId(id) {
+            document.getElementById(id).scrollIntoView({ behavior: 'smooth' });
+        }
+
+        function scrollToSection(direction) {
+            let currentIdx = 0;
+            let maxVis = 0;
+            sectionsIds.forEach((id, idx) => {
+                const el = document.getElementById(id);
+                const rect = el.getBoundingClientRect();
+                const visibleHeight = Math.min(rect.bottom, window.innerHeight) - Math.max(rect.top, 0);
+                if (visibleHeight > maxVis) {
+                    maxVis = visibleHeight;
+                    currentIdx = idx;
+                }
+            });
+            let nextIdx = direction === 'down' ? currentIdx + 1 : currentIdx - 1;
+            if (nextIdx < 0) nextIdx = 0;
+            if (nextIdx >= sectionsIds.length) nextIdx = sectionsIds.length - 1;
+            scrollToId(sectionsIds[nextIdx]);
+        }
+
+        const observerOptions = { threshold: 0.4 };
+        const observer = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    const id = entry.target.id;
+                    const container = entry.target.querySelector('.fade-in-section');
+                    if (container) container.classList.add('is-visible');
+                    document.querySelectorAll('.progress-segment').forEach(seg => {
+                        seg.classList.toggle('active', seg.getAttribute('data-target') === id);
+                    });
+                }
+            });
+        }, observerOptions);
+
+        sectionsIds.forEach(id => {
+            observer.observe(document.getElementById(id));
+        });
+
+        // --- SCROLL EFFECT: ZOOM & FADE ---
+        window.addEventListener('scroll', () => {
+            document.querySelectorAll('section').forEach(sec => {
+                const container = sec.querySelector('.container');
+                if (!container) return;
+                const rect = sec.getBoundingClientRect();
+                if (rect.top < 0) {
+                    const distance = Math.abs(rect.top);
+                    const scale = 1 + (distance * 0.0005); 
+                    const opacity = 1 - (distance / (window.innerHeight * 0.6)); 
+                    container.style.transition = 'none';
+                    container.style.transform = `scale(${scale})`;
+                    container.style.opacity = Math.max(0, opacity);
+                } else {
+                    container.style.transform = '';
+                    container.style.opacity = '';
+                    container.style.transition = ''; 
+                }
+            });
+        });
+
+        // --- CAROUSEL AUTO-ROTATION ---
+        function initCarousel(id) {
+            let idx = 0;
+            const container = document.getElementById(id);
+            if (!container) return;
+            const slides = container.querySelectorAll('.carousel-slide');
+            setInterval(() => {
+                slides[idx].classList.remove('active');
+                slides[idx].style.opacity = '0';
+                idx = (idx + 1) % slides.length;
+                slides[idx].classList.add('active');
+                slides[idx].style.opacity = '1';
+            }, 4000);
+        }
+
+        initCarousel('carousel-graphics');
+        initCarousel('carousel-art');
+    </script>
+</body>
+</html>
