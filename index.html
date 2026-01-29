@@ -380,7 +380,7 @@
         }
 
         /* --- RESPONSIVE --- */
-        @media (max-width: 768px) {
+        @media (max-width: 480px) {
             .skills-grid {
                 grid-template-columns: 1fr;
             }
@@ -535,6 +535,9 @@
                 <br>
                 <a href="mailto:oleksii@pryimak.pl" style="font-size: 1.5rem;">oleksii@pryimak.pl</a>
             </div>
+            <div class="hero-socials">
+                <a href="https://www.linkedin.com/in/oleksii-pryimak-42314186/" target="_blank">LinkedIn</a>
+            </div>
         </div>
     </section>
 
@@ -599,8 +602,8 @@
                 const rect = sec.getBoundingClientRect();
                 if (rect.top < 0) {
                     const distance = Math.abs(rect.top);
-                    const scale = 1 + (distance * 0.0005); 
-                    const opacity = 1 - (distance / (window.innerHeight * 0.6)); 
+                    const scale = 1 + (distance * 0.0009); 
+                    const opacity = 1 - (distance / (window.innerHeight * 1.1)); 
                     container.style.transition = 'none';
                     container.style.transform = `scale(${scale})`;
                     container.style.opacity = Math.max(0, opacity);
