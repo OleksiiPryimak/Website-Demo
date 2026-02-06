@@ -59,8 +59,8 @@
         /* --- LANGUAGE SWITCH (Top Right) --- */
         .lang-container {
             position: fixed;
-            top: 20px;
-            right: 20px;
+            left: 50%;
+            transform: translateX(-50%);
             z-index: 1001;
             display: flex;
         }
@@ -221,12 +221,45 @@
             transform: translateY(0);
         }
 
+        /* --- FLOATING ANIMATION FOR PROGRAMMING SECTION --- */
+        @keyframes floatUp {
+            from {
+                opacity: 0;
+                transform: translateY(60px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        /* Apply staggered floating animation to section elements */
+        #programming .section-title.float-up,
+        #graphics .section-title.float-up,
+        #art .section-title.float-up {
+            animation: floatUp 0.5s ease-out forwards;
+        }
+
+        /* #programming .section-desc.float-up,
+        #graphics .section-desc.float-up,
+        #art .section-desc.float-up {
+            animation: floatUp 0.8s ease-out 0.2s forwards;
+        } 
+
+        #programming .skills-grid.float-up,
+        #graphics .skills-grid.float-up,
+        #art .skills-grid.float-up {
+            animation: floatUp 1s ease-out 0.4s forwards;
+        } */
+
         /* --- HERO SECTION --- */
         #hero h1 {
             font-size: 4rem;
             margin-bottom: 20px;
             letter-spacing: -2px;
             text-shadow: 0 4px 10px rgba(0,0,0,0.5);
+            min-height: 1.2em;
+            min-width: 100px;
         }
 
         #hero p {
@@ -240,6 +273,37 @@
             background: rgba(0,0,0,0.3);
             padding-top: 10px;
             padding-bottom: 10px;
+            min-height: 120px;
+        }
+
+        /* Hide hero elements initially until typing effect starts */
+        #hero-title, #hero-description {
+            visibility: hidden;
+        }
+
+        #hero-title.typing-active, #hero-description.typing-active {
+            visibility: visible;
+        }
+
+        /* Typing Effect Styles */
+        .typing-text {
+            display: inline-block;
+            position: relative;
+        }
+
+        .typing-cursor {
+            display: inline-block;
+            width: 2px;
+            height: 1em;
+            background-color: var(--accent-color);
+            margin-left: 4px;
+            animation: blink 0.8s infinite;
+            vertical-align: text-bottom;
+        }
+
+        @keyframes blink {
+            0%, 49% { opacity: 1; }
+            50%, 100% { opacity: 0; }
         }
 
         .hero-socials {
@@ -263,6 +327,23 @@
             box-shadow: 0 0 10px var(--accent-color);
         }
 
+        /* --- CANVAS PARTICLE SYSTEM --- */
+        #particle-canvas {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: 1;
+            display: block;
+        }
+
+        /* Hide particle canvas on mobile devices for better performance */
+        @media (max-width: 768px) {
+            #particle-canvas {
+                display: none !important;
+            }
+        }
 
         /* --- UNIFIED TEMPLATE FOR SKILLS (Grid System) --- */
         .section-title {
@@ -420,11 +501,12 @@
 
     <!-- Right Navigation & Progress -->
     <div class="nav-container">
+
         <div class="nav-arrow" onclick="scrollToSection('up')">
             <i class="fas fa-chevron-up"></i>
         </div>
         
-        <div class="progress-bar">
+        <div class="progress-bar">          
             <!-- 5 segments corresponding to 5 sections -->
             <div class="progress-segment" data-target="hero" onclick="scrollToId('hero')"></div>
             <div class="progress-segment" data-target="programming" onclick="scrollToId('programming')"></div>
@@ -442,10 +524,11 @@
     <section id="hero">
         <div class="bg-image bg-hero bg-color"></div>
         <div class="overlay overlay-light"></div>
+        <canvas id="particle-canvas"></canvas>
         <div class="container fade-in-section">
-            <h1 data-lang-pl="Cześć" data-lang-en="Hello">Cześć</h1>
-            <p data-lang-pl="Mam na imię Oleksii. Jestem specjalistą w branży kreatywnej oraz programistą Python. Posiadam ponad 20-letnie doświadczenie w sektorze kreatywnym oraz bogate kompetencje w projektowaniu graficznym dla branż e-commerce, sztuki wizualnej i architektury." 
-               data-lang-en="My name is Oleksii. I am a Creative Professional & Python Developer. I have over 20 years of experience in the creative sector, with extensive expertise in graphic design for e-commerce, visual arts, and architecture.">
+            <h1 id="hero-title" data-lang-pl="Cześć" data-lang-en="Hello">Cześć</h1>
+            <p id="hero-description" data-lang-pl="Mam na imię Oleksii. Od ponad 20 lat realizuję projekty dla e-commerce, sztuki wizualnej i architektury. Obecnie łączę Photoshopa z Pythonem, by tworzyć autorskie narzędzia rozwiązujące wyzwania operacyjne i zwiększające produktywność." 
+               data-lang-en="My name is Oleksii. For over 20 years, I have been delivering projects across e-commerce, visual arts, and architecture. Currently, I combine Photoshop and Python to build custom tools that solve operational challenges and boost productivity.">
                 Mam na imię Oleksii. Jestem specjalistą w branży kreatywnej oraz programistą Python. Posiadam ponad 20-letnie doświadczenie w sektorze kreatywnym oraz bogate kompetencje w projektowaniu graficznym dla branż e-commerce, sztuki wizualnej i architektury.
             </p>
             
@@ -463,16 +546,18 @@
         <div class="container fade-in-section">
             <h2 class="section-title" data-lang-pl="Programowanie" data-lang-en="Programming">Programowanie</h2>
             
+            <div class="section-desc" data-lang-pl="Kursy i certyfikaty: Generative AI Leader/2026, Basics: HTML, CSS, JavaScript/2025, Practical Python - Course/2023, Creative Skills for Innovation - Workshop/PFR & Google/2019"
+                 data-lang-en="Courses & Certificates: Generative AI Leader/2026, Basics: HTML, CSS, JavaScript/2025, Practical Python - Course/2023, Creative Skills for Innovation - Workshop/PFR & Google/2019">
+                 Kursy i certyfikaty: Generative AI Leader/2026, Basics: HTML, CSS, JavaScript/2025, Practical Python - Course/2023, Creative Skills for Innovation - Workshop/PFR & Google/2019
+            </div>
+
             <div class="skills-grid">
                 <div class="grid-item" data-lang-pl="Główne narzędzie: Python" data-lang-en="Main Tool: Python">Główne narzędzie: Python</div>
                 <div class="grid-item" data-lang-pl="Podstawy: HTML, CSS, JavaScript" data-lang-en="Basics: HTML, CSS, JavaScript">Podstawy: HTML, CSS, JavaScript</div>
                 <a href="https://github.com/OleksiiPryimak" class="grid-item link-block" data-lang-pl="GitHub Profile" data-lang-en="GitHub Profile">GitHub Profile</a>
             </div>
 
-            <div class="section-desc" data-lang-pl="Kursy i certyfikaty: Generative AI Leader/2026, Basics: HTML, CSS, JavaScript/2025, Practical Python - Course/2023, Creative Skills for Innovation - Workshop/PFR & Google/2019"
-                 data-lang-en="Courses & Certificates: Generative AI Leader/2026, Basics: HTML, CSS, JavaScript/2025, Practical Python - Course/2023, Creative Skills for Innovation - Workshop/PFR & Google/2019">
-                 Kursy i certyfikaty: Generative AI Leader/2026, Basics: HTML, CSS, JavaScript/2025, Practical Python - Course/2023, Creative Skills for Innovation - Workshop/PFR & Google/2019
-            </div>
+            
 
             <img src="https://lh3.googleusercontent.com/u/0/d/1_8c319Y8_fZQAHGvQ_VDsJjbbvxZF7al" alt="Code" class="content-image">
         </div>
@@ -484,16 +569,16 @@
         <div class="overlay"></div>
         <div class="container fade-in-section">
             <h2 class="section-title" data-lang-pl="Grafika Komputerowa" data-lang-en="Computer Graphics">Grafika Komputerowa</h2>
-            
+
+            <div class="section-desc" data-lang-pl="Główne narzędzie: Adobe Photoshop. Pracowałem również z oprogramowaniem: Affinity, Inkscape (grafika wektorowa), Blender (grafika 3D), AutoCAD, NanoCAD (projekty CAD) oraz HitFilm Express (edycja wideo)."
+                 data-lang-en="Main Tool: Adobe Photoshop. I also worked with software: Affinity, Inkscape (vector graphics), Blender (3D graphics), AutoCAD, NanoCAD (CAD projects), and HitFilm Express (video editing).">
+                 Pracowałem również z oprogramowaniem: Affinity, Inkscape (grafika wektorowa), Blender (grafika 3D), AutoCAD, NanoCAD (projekty CAD) oraz HitFilm Express (edycja wideo).
+            </div>
+
             <div class="skills-grid">
                 <div class="grid-item" data-lang-pl="Główne narzędzie: Adobe Photoshop" data-lang-en="Main Tool: Adobe Photoshop">Główne narzędzie: Adobe Photoshop</div>
                 <div class="grid-item" data-lang-pl="Zautomatyzowane Operacje Photoshop" data-lang-en="Automated Photoshop Actions">Zautomatyzowane Operacje Photoshop</div>
                 <a href="https://oleksii.pryimak.pl/portfolio/grafika-komputerowa" class="grid-item link-block" data-lang-pl="Zobacz Portfolio" data-lang-en="View Portfolio">Zobacz Portfolio</a>
-            </div>
-
-            <div class="section-desc" data-lang-pl="Pracowałem również z oprogramowaniem: Affinity, Inkscape (grafika wektorowa), Blender (grafika 3D), AutoCAD, NanoCAD (projekty CAD) oraz HitFilm Express (edycja wideo)."
-                 data-lang-en="I also worked with software: Affinity, Inkscape (vector graphics), Blender (3D graphics), AutoCAD, NanoCAD (CAD projects), and HitFilm Express (video editing).">
-                 Pracowałem również z oprogramowaniem: Affinity, Inkscape (grafika wektorowa), Blender (grafika 3D), AutoCAD, NanoCAD (projekty CAD) oraz HitFilm Express (edycja wideo).
             </div>
 
             <img src="https://lh3.googleusercontent.com/u/0/d/1qLOI4BWQkr1YceWApfFBeY30xItSWuCX" alt="Graphics" class="content-image">
@@ -507,16 +592,16 @@
         <div class="overlay"></div>
         <div class="container fade-in-section">
             <h2 class="section-title" data-lang-pl="Artystyczne Malowanie" data-lang-en="Mural art">Artystyczne Malowanie</h2>
-            
-            <div class="skills-grid">
-                <div class="grid-item" data-lang-pl="Murale, Obrazy" data-lang-en="Mural art, Canvases">Murale, Obrazy</div>
-                <div class="grid-item" data-lang-pl="Technika: farba w sprayu i akryl." data-lang-en="Technique: spray paint and acrylic">Technika: farba w sprayu i akryl.</div>
-                <a href="https://oleksii.pryimak.pl/portfolio/artystyczne-malowanie" class="grid-item link-block" data-lang-pl="Galeria Prac" data-lang-en="Art Gallery">Galeria Prac</a>
-            </div>
 
             <div class="section-desc" data-lang-pl="Moje portfolio obejmuje ponad 20 000 m² zrealizowanych projektów. Pierwszy komercyjny mural: 2004 r. Najwyższa realizacja: ok. 90 m wysokości. Największy pojedynczy projekt: ok. 2 000 m²."
                  data-lang-en="My portfolio includes over 20,000 m² of completed projects. First commercial mural: 2004. Highest realization: approx. 90 m high. Largest single project: approx. 2,000 m².">
                  Moje portfolio obejmuje ponad 20 000 m² zrealizowanych projektów. Pierwszy komercyjny mural: 2004 r. Najwyższa realizacja: ok. 90 m wysokości. Największy pojedynczy projekt: ok. 2 000 m².
+            </div>
+
+            <div class="skills-grid">
+                <div class="grid-item" data-lang-pl="Murale, Obrazy" data-lang-en="Mural art, Canvases">Murale, Obrazy</div>
+                <div class="grid-item" data-lang-pl="Technika: farba w sprayu i akryl." data-lang-en="Technique: spray paint and acrylic">Technika: farba w sprayu i akryl.</div>
+                <a href="https://oleksii.pryimak.pl/portfolio/artystyczne-malowanie" class="grid-item link-block" data-lang-pl="Galeria Prac" data-lang-en="Art Gallery">Galeria Prac</a>
             </div>
 
             <img src="https://lh3.googleusercontent.com/u/0/d/1aIfMOscrXXCA0p3--nuOG9ZZxhAIDbhT" alt="Art" class="content-image">
@@ -542,96 +627,813 @@
     </section>
 
     <script>
-        // --- LANGUAGE SWITCHING ---
+
+        // --- INTERACTIVE PARTICLE SYSTEM (CANVAS) ---
+        /**
+         * ParticleSystem: Manages canvas-based particle animations (stars, shooting stars).
+         * 
+         * Features:
+         * - 500 twinkling stars with physics-based mouse repulsion
+         * - Shooting stars spawning automatically or on click
+         * - Smooth animations at ~60fps using requestAnimationFrame
+         * - Singleton pattern prevents duplicate event listeners
+         * - Automatic canvas resizing on window resize
+         * 
+         * Physics:
+         * - Stars repel within 100px radius of cursor with friction and return-to-base mechanics
+         * - Twinkling via sinusoidal opacity modulation
+         * - Shooting stars interpolate linearly from start to end position over duration
+         * 
+         * Memory Management:
+         * - Bound event handlers (_onMouseMove, _onClick, _onResize) enable proper cleanup via destroy()
+         * - destroy() method removes all listeners and clears singleton state
+         * - Use sparingly; class is designed for single-instance initialization per page load
+         */
+        class ParticleSystem {
+            /**
+             * Constructs a ParticleSystem instance and initializes the canvas particle animation.
+             * Implements singleton pattern to prevent multiple instances and duplicate event listeners.
+             * 
+             * @param {string} canvasId - ID of the canvas element to render to
+             * @throws {void} Returns existing instance if already initialized; does not throw
+             */
+            constructor(canvasId) {
+                // Ensure only one instance exists (singleton pattern)
+                // Multiple instantiation attempts return the existing instance
+                if (ParticleSystem._instance) {
+                    console.warn('ParticleSystem already initialized. Returning existing instance.');
+                    return ParticleSystem._instance;
+                }
+                ParticleSystem._instance = this;
+
+                // Get canvas reference and 2D rendering context
+                this.canvas = document.getElementById(canvasId);
+                if (!this.canvas) {
+                    console.warn('Canvas element not found');
+                    return;
+                }
+                
+                this.ctx = this.canvas.getContext('2d');
+                this.width = this.canvas.width;
+                this.height = this.canvas.height;
+                
+                // Particle collections
+                this.stars = [];                // Array of static stars with twinkling effect
+                this.shootingStars = [];        // Array of active shooting stars in flight
+                this.mouseX = -1000;            // Current mouse X position (off-screen initially)
+                this.mouseY = -1000;            // Current mouse Y position (off-screen initially)
+                this.time = 0;                  // Animation frame counter (incremented by ~16ms per frame)
+
+                // Bound event handler functions (stored for later removal via removeEventListener)
+                // Binding to 'this' ensures proper context when handlers are called
+                this._onMouseMove = (e) => { this.mouseX = e.clientX; this.mouseY = e.clientY; };
+                this._onClick = (e) => { this.spawnShootingStar(e.clientX, e.clientY); };
+                this._onResize = () => { this.resizeCanvas(); };
+
+                // Initialize animation system
+                this.resizeCanvas();            // Set canvas dimensions to window size
+                this.initStars();               // Generate initial star field
+                this.setupEventListeners();     // Attach global event handlers (1x only via flag)
+                this.animate();                 // Start animation loop
+            }
+
+            /**
+             * Resizes canvas to match current window dimensions.
+             * Called on window resize event to maintain full-screen coverage.
+             */
+            resizeCanvas() {
+                this.canvas.width = window.innerWidth;
+                this.canvas.height = window.innerHeight;
+                this.width = this.canvas.width;
+                this.height = this.canvas.height;
+            }
+
+            /**
+             * Initializes the star field with 500 randomly distributed stars.
+             * Each star has unique opacity, size, and twinkle characteristics.
+             * 
+             * Star properties:
+             * - x, y: current position (randomly scattered across canvas)
+             * - baseX, baseY: resting position (stars return here after mouse interaction)
+             * - radius: visual size (0.3–1.8 pixels)
+             * - opacity: current alpha channel (affected by twinkling)
+             * - originalOpacity: base brightness before twinkling effect
+             * - twinkleSpeed: rate of brightness oscillation (0.03–0.0301 per frame)
+             * - twinklePhase: current phase in sinusoidal twinkling cycle
+             * - vx, vy: velocity vector (changes from mouse repulsion, dampens over time)
+             */
+            initStars() {
+                this.stars = [];
+                const starCount = 500; // Generate 500 individual stars
+                
+                for (let i = 0; i < starCount; i++) {
+                    this.stars.push({
+                        x: Math.random() * this.width,
+                        y: Math.random() * this.height,
+                        baseX: 0,
+                        baseY: 0,
+                        radius: Math.random() * 1.5 + 0.3,                    // Size range: 0.3–1.8px
+                        opacity: Math.random() * 0.7 + 0.3,                   // Initial opacity: 0.3–1.0
+                        twinkleSpeed: Math.random() * 0.0001 + 0.03,          // Faster twinkle rate
+                        twinklePhase: Math.random() * Math.PI * 1,            // Random phase offset
+                        originalOpacity: Math.random() * 0.7 + 0.5,           // Base brightness: 0.5–1.2
+                        vx: 0,                                                 // Horizontal velocity
+                        vy: 0                                                  // Vertical velocity
+                    });
+                    
+                    // Store rest position for return-to-base behavior
+                    const star = this.stars[i];
+                    star.baseX = star.x;
+                    star.baseY = star.y;
+                }
+            }
+
+            /**
+             * Attaches global event listeners (mousemove, click, resize, auto-spawn timer).
+             * Uses static flag (_listenersAttached) to prevent duplicate listener attachment.
+             * This is critical for the singleton pattern—ensures listeners attach only once.
+             * 
+             * Listeners:
+             * - mousemove: updates mouseX, mouseY for repulsion physics
+             * - click: spawns shooting star at cursor position
+             * - resize: resets canvas dimensions
+             * - auto-spawn: setTimeout loop spawns random shooting stars every 1–1.5 seconds (80% probability)
+             */
+            setupEventListeners() {
+                // Attach global listeners only once across all instances (singleton pattern)
+                // Static flag prevents redundant event listeners if constructor called multiple times
+                if (!ParticleSystem._listenersAttached) {
+                    document.addEventListener('mousemove', this._onMouseMove);
+                    document.addEventListener('click', this._onClick);
+
+                    // Auto-spawn shooting stars with random intervals (recursive setTimeout loop)
+                    // 80% spawn probability each interval to avoid overwhelming animations
+                    // Interval: 1000–1500ms (1–1.5 seconds) per spawn attempt
+                    const scheduleShootingStar = () => {
+                        if (Math.random() > 0.2) {  // 80% pass rate
+                            this.spawnShootingStar();
+                        }
+                        // Schedule next spawn attempt with fresh random delay
+                        // This approach is better than setInterval for varying, unpredictable timing
+                        ParticleSystem._globalScheduleHandle = setTimeout(scheduleShootingStar, Math.random() * 500 + 1000);
+                    };
+                    scheduleShootingStar();
+
+                    window.addEventListener('resize', this._onResize);
+                    ParticleSystem._listenersAttached = true;
+                }
+            }
+
+            /**
+             * Removes all global event listeners and clears singleton state.
+             * Call this if you need to destroy the particle system (e.g., before re-initialization).
+             * 
+             * Cleanup actions:
+             * - Removes mousemove, click, resize listeners
+             * - Clears auto-spawn setTimeout timer
+             * - Resets _listenersAttached flag to allow future re-initialization
+             * - Clears singleton instance reference
+             */
+            destroy() {
+                if (ParticleSystem._listenersAttached) {
+                    document.removeEventListener('mousemove', this._onMouseMove);
+                    document.removeEventListener('click', this._onClick);
+                    window.removeEventListener('resize', this._onResize);
+                    clearTimeout(ParticleSystem._globalScheduleHandle);
+                    ParticleSystem._listenersAttached = false;
+                }
+                if (ParticleSystem._instance === this) ParticleSystem._instance = null;
+            }
+
+            /**
+             * Creates a shooting star object and adds it to the active shooting stars array.
+             * Shooting stars animate from startX/Y to endX/Y over a specified duration.
+             * 
+             * @param {number|null} fromX - Starting X position; if null, random within canvas width
+             * @param {number|null} fromY - Starting Y position; if null, random in upper 50% of canvas
+             * 
+             * Behavior:
+             * - If click-triggered: spawns from cursor position (fromX, fromY provided)
+             * - If auto-spawned: random start in upper canvas, flies right and slightly downward
+             * - Duration: 600–1400ms random per star (adds visual variety)
+             * - End position: advances rightward beyond canvas edge (off-screen exit)
+             */
+            spawnShootingStar(fromX = null, fromY = null) {
+                // Use provided coordinates (from click) or generate random spawn point
+                const startX = fromX !== null ? fromX : Math.random() * this.width;
+                const startY = fromY !== null ? fromY : Math.random() * this.height * 0.5;  // Upper canvas
+                const endX = this.width + 200;                                              // Exit right edge
+                const endY = startY + Math.random() * 200 - 100;                            // Slight vertical variance
+                const duration = Math.random() * 800 + 600;                                 // 600–1400ms duration
+                
+                this.shootingStars.push({
+                    startX,
+                    startY,
+                    endX,
+                    endY,
+                    currentX: startX,
+                    currentY: startY,
+                    startTime: this.time,      // Frame counter at creation (for progress calculation)
+                    duration,                  // Total animation duration
+                    length: 100,               // (unused; reserved for future tail length feature)
+                    width: 3                   // Line width for tail stroke
+                });
+            }
+
+            /**
+             * Updates physics for all stars in the star field.
+             * 
+             * Physics pipeline:
+             * 1. Calculate distance to cursor; apply repulsion force if within REPEL_RADIUS
+             * 2. Dampen velocity via friction (stars naturally slow down)
+             * 3. Update position based on velocity
+             * 4. Apply return-to-base force (stars gravitate toward baseX/Y)
+             * 5. Wrap around screen edges (stars reappear on opposite side)
+             * 6. Update twinkling phase and calculate new opacity
+             * 
+             * Constants:
+             * - REPEL_RADIUS (100px): distance threshold for cursor repulsion
+             * - REPEL_FORCE (0.5): acceleration multiplier for repulsion vector
+             * - FRICTION (0.95): velocity damping factor per frame
+             * - RETURN_SPEED (0.05): interpolation speed back toward base position
+             */
+            updateStars() {
+                const REPEL_RADIUS = 100;      // Stars repel within 100px of cursor
+                const REPEL_FORCE = 0.5;       // Force intensity multiplier
+                const FRICTION = 0.95;         // Velocity damping per frame
+                const RETURN_SPEED = 0.05;     // Return-to-base interpolation speed
+
+                this.stars.forEach(star => {
+                    // Calculate 2D distance from star to cursor
+                    const dx = star.x - this.mouseX;
+                    const dy = star.y - this.mouseY;
+                    const distance = Math.sqrt(dx * dx + dy * dy);
+
+                    // Apply repulsion force if cursor is close
+                    // Force magnitude decreases linearly with distance (stronger at cursor, zero at edge)
+                    if (distance < REPEL_RADIUS && distance > 0) {
+                        const angle = Math.atan2(dy, dx);                     // Angle away from cursor
+                        const force = (REPEL_RADIUS - distance) / REPEL_RADIUS * REPEL_FORCE;
+                        star.vx += Math.cos(angle) * force;
+                        star.vy += Math.sin(angle) * force;
+                    }
+
+                    // Apply damping (friction) to velocity
+                    star.vx *= FRICTION;
+                    star.vy *= FRICTION;
+                    
+                    // Update position from velocity
+                    star.x += star.vx;
+                    star.y += star.vy;
+
+                    // Slow return to base position via linear interpolation
+                    // Stars naturally gravitate back to their original resting spots
+                    star.x += (star.baseX - star.x) * RETURN_SPEED;
+                    star.y += (star.baseY - star.y) * RETURN_SPEED;
+
+                    // Wrap around screen edges (toroidal topology)
+                    // Stars that exit one edge reappear on opposite edge
+                    if (star.x < 0) star.x = this.width;
+                    if (star.x > this.width) star.x = 0;
+                    if (star.y < 0) star.y = this.height;
+                    if (star.y > this.height) star.y = 0;
+
+                    // Twinkling effect: sinusoidal opacity modulation
+                    star.twinklePhase += star.twinkleSpeed;
+                    const twinkleNorm = (Math.sin(star.twinklePhase) + 1) / 2;  // Map sin(-1..1) → (0..1)
+                    // Modulate brightness: base + wiggle room (range ~0.3–1.1)
+                    const intensity = 0.3 + twinkleNorm * 1;
+                    star.opacity = Math.min(1, star.originalOpacity * intensity);  // Clamp to [0, 1]
+                });
+            }
+
+            /**
+             * Updates positions and removes expired shooting stars.
+             * 
+             * Process:
+             * 1. Filter out stars where elapsed time >= duration (remove dead stars)
+             * 2. For remaining stars, calculate progress (0..1) and interpolate position
+             *    - At progress=0: currentX/Y = startX/Y
+             *    - At progress=1: currentX/Y = endX/Y
+             */
+            updateShootingStars() {
+                // Remove shooting stars that have completed their animation
+                this.shootingStars = this.shootingStars.filter(star => {
+                    const elapsed = this.time - star.startTime;
+                    return elapsed < star.duration;
+                });
+
+                // Update positions of remaining shooting stars via linear interpolation
+                this.shootingStars.forEach(star => {
+                    const elapsed = this.time - star.startTime;
+                    const progress = elapsed / star.duration;  // 0 (start) to 1 (end)
+                    
+                    star.currentX = star.startX + (star.endX - star.startX) * progress;
+                    star.currentY = star.startY + (star.endY - star.startY) * progress;
+                });
+            }
+
+            /**
+             * Renders all static stars as white circles with current opacity.
+             * Called every frame in the animation loop.
+             */
+            drawStars() {
+                this.stars.forEach(star => {
+                    this.ctx.fillStyle = `rgba(255, 255, 255, ${star.opacity})`;
+                    this.ctx.beginPath();
+                    this.ctx.arc(star.x, star.y, star.radius, 0, Math.PI * 2);
+                    this.ctx.fill();
+                });
+            }
+
+            /**
+             * Renders all active shooting stars with gradient tails and bright cores.
+             * 
+             * Visual components per shooting star:
+             * 1. Gradient tail: linear gradient from tail (transparent) to head (bright)
+             *    - Colors: yellow → orange → white with alpha fading
+             *    - Opacity decreases as star ages (progress increases)
+             * 2. Bright core: 2px white circle at star's current position
+             * 
+             * Tail position is calculated by back-projecting along velocity vector.
+             */
+            drawShootingStars() {
+                this.shootingStars.forEach(star => {
+                    const elapsed = this.time - star.startTime;
+                    const progress = elapsed / star.duration;
+                    const opacity = Math.max(0, 1 - progress);  // Fade out as star ages
+
+                    // Calculate tail position (extends backward along velocity vector)
+                    const velocityX = (star.endX - star.startX) / star.duration;
+                    const velocityY = (star.endY - star.startY) / star.duration;
+                    const tailX = star.currentX - velocityX * 30;  // 30px behind current position
+                    const tailY = star.currentY - velocityY * 30;
+
+                    // Create and apply gradient for tail (transparent → bright fade)
+                    const gradient = this.ctx.createLinearGradient(tailX, tailY, star.currentX, star.currentY);
+                    gradient.addColorStop(0, `rgba(255, 255, 200, 0)`);           // Tail: transparent
+                    gradient.addColorStop(0.5, `rgba(255, 200, 100, ${opacity * 0.5})`);  // Mid: semi-opaque orange
+                    gradient.addColorStop(1, `rgba(255, 255, 255, ${opacity})`);  // Head: bright white
+
+                    // Draw tail line with rounded caps
+                    this.ctx.strokeStyle = gradient;
+                    this.ctx.lineWidth = star.width;
+                    this.ctx.lineCap = 'round';
+                    this.ctx.lineJoin = 'round';
+                    this.ctx.beginPath();
+                    this.ctx.moveTo(tailX, tailY);
+                    this.ctx.lineTo(star.currentX, star.currentY);
+                    this.ctx.stroke();
+
+                    // Draw bright core at head position
+                    this.ctx.fillStyle = `rgba(255, 255, 255, ${opacity})`;
+                    this.ctx.beginPath();
+                    this.ctx.arc(star.currentX, star.currentY, 2, 0, Math.PI * 2);
+                    this.ctx.fill();
+                });
+            }
+
+            /**
+             * Clears the canvas and redraws all particles (stars and shooting stars).
+             * Called once per animation frame before updating positions.
+             */
+            render() {
+                // Clear entire canvas for fresh draw
+                this.ctx.clearRect(0, 0, this.width, this.height);
+
+                // Render both particle types
+                this.drawStars();
+                this.drawShootingStars();
+            }
+
+            /**
+             * Main animation loop: updates physics, renders frame, and schedules next frame.
+             * Runs at ~60fps using requestAnimationFrame for smooth motion.
+             * 
+             * Per-frame sequence:
+             * 1. Increment time counter by ~16ms (60fps = 16.67ms per frame)
+             * 2. Update star physics (repulsion, friction, return-to-base, twinkle)
+             * 3. Update shooting star positions and remove expired ones
+             * 4. Render current state (clear canvas, draw all particles)
+             * 5. Schedule next frame via requestAnimationFrame
+             */
+            animate() {
+                this.time += 16;                // Increment frame counter (~16ms = ~60fps)
+                this.updateStars();             // Apply physics to star field
+                this.updateShootingStars();     // Move and cull shooting stars
+                this.render();                  // Draw frame
+                requestAnimationFrame(() => this.animate());  // Schedule next frame
+            }
+        }
+
+        // --- TYPING EFFECT ---
+        // Stores active typing timers for each element to allow cancellation when switching languages
+        const typeWriterTimers = {};
+        
+        /**
+         * Animates text character-by-character, simulating a typewriter effect.
+         * 
+         * @param {string} elementId - ID of the element to type into
+         * @param {string} text - The text to animate
+         * @param {number} speed - Delay in ms between character animations (default: 50ms)
+         * @param {Function} callback - Optional callback executed when typing completes
+         * 
+         * Flow:
+         * 1. Clears element and adds 'typing-active' class (CSS: visibility:hidden → visible)
+         * 2. Progressively appends text with animated cursor
+         * 3. On completion, replaces animated content with clean text (no cursor)
+         * 4. Cancels any previous typing animation for the same element
+         * 
+         * Used by switchLanguage() to re-animate hero title/description when language changes.
+         */
+        function typeWriter(elementId, text, speed = 50, callback = null) {
+            const element = document.getElementById(elementId);
+            if (!element) return;
+            
+            // Cancel any in-progress typing animation for this element
+            if (typeWriterTimers[elementId]) {
+                clearTimeout(typeWriterTimers[elementId]);
+            }
+            
+            element.textContent = ''; // Clear safely (no HTML)
+            element.classList.add('typing-active'); // Show element for animation
+            let index = 0;
+            const originalText = text;
+            
+            function type() {
+                if (index < originalText.length) {
+                    // Use innerHTML only to inject the cursor span (safe: cursor is trusted HTML)
+                    element.innerHTML = originalText.substring(0, index + 1) + '<span class="typing-cursor"></span>';
+                    index++;
+                    typeWriterTimers[elementId] = setTimeout(type, speed);
+                } else {
+                    // Animation complete: set final text without cursor using textContent (safe)
+                    element.textContent = originalText;
+                    delete typeWriterTimers[elementId];
+                    if (callback) callback();
+                }
+            }
+            
+            type();
+        }
+
+        // --- LANGUAGE SWITCHING WITH TYPING EFFECT ---
+        /**
+         * Switches the UI language and updates all text content.
+         * 
+         * Interaction with typeWriter():
+         * - Hero title and description elements are animated with typeWriter() when language changes.
+         * - All other elements are updated immediately via textContent.
+         * - Calling switchLanguage() automatically cancels any in-progress typing animation
+         *   (via typeWriter's cleanup logic).
+         * 
+         * Language Persistence:
+         * - Selected language is saved to localStorage immediately.
+         * - On page reload, initializeApp() retrieves the saved language and calls switchLanguage().
+         * - This ensures user's language preference is remembered across sessions.
+         * 
+         * @param {string} lang - Language code: 'pl' (Polish) or 'en' (English)
+         */
         function switchLanguage(lang) {
+            // Persist language choice to localStorage for next page visit
+            localStorage.setItem('language', lang);
+            
+            // Update language button states (only one active at a time)
             document.getElementById('btn-pl').classList.toggle('active', lang === 'pl');
             document.getElementById('btn-en').classList.toggle('active', lang === 'en');
+            
+            // Update all elements with data-lang-{lang} attributes
             document.querySelectorAll(`[data-lang-${lang}]`).forEach(el => {
-                el.innerText = el.getAttribute(`data-lang-${lang}`);
+                if (el.id === 'hero-title' || el.id === 'hero-description') {
+                    // Animate hero section with typewriter effect
+                    const text = el.getAttribute(`data-lang-${lang}`);
+                    typeWriter(el.id, text, 30);
+                } else {
+                    // Update all other text immediately (no animation)
+                    el.textContent = el.getAttribute(`data-lang-${lang}`);
+                }
             });
         }
 
         // --- NAVIGATION & OBSERVER ---
+        /**
+         * Navigation and scroll synchronization system.
+         * Manages section-to-section scrolling, progress bar updates, and scroll-triggered animations.
+         * 
+         * Key Features:
+         * - Smooth scrolling between sections (hero, programming, graphics, art, contact)
+         * - Up/down arrow navigation to adjacent sections
+         * - Progress bar highlighting (right sidebar) syncs with currently visible section
+         * - IntersectionObserver triggers animations when sections scroll into view:
+         *   • Fade-in animation for all section containers
+         *   • Floating-up animation for programming, graphics, and art section elements
+         * 
+         * Architecture:
+         * - sectionsIds: Array of section element IDs (defines scroll order)
+         * - scrollToId(): Programmatically scrolls to a section
+         * - scrollToSection(): Scroll to adjacent section based on direction
+         * - observer: IntersectionObserver instance watching all sections
+         * - observerOptions: Configure visibility threshold (40% visible = trigger)
+         */
+
+        // Array of section IDs defining navigation order and structure
         const sectionsIds = ['hero', 'programming', 'graphics', 'art', 'contact'];
         
+        /**
+         * Smoothly scrolls the page to a specific section by its ID.
+         * Triggered by progress bar clicks, arrow navigation, or programmatic calls.
+         * 
+         * @param {string} id - Section ID to scroll to (must exist in HTML)
+         * 
+         * Behavior:
+         * - Uses native scrollIntoView() with 'smooth' behavior for animated scroll
+         * - Respects viewport center alignment automatically
+         * - Works with disabled/hidden sections gracefully
+         */
         function scrollToId(id) {
             document.getElementById(id).scrollIntoView({ behavior: 'smooth' });
         }
 
+        /**
+         * Scrolls to the next or previous section based on user direction input.
+         * Called by up/down arrow buttons in right navigation sidebar.
+         * 
+         * @param {string} direction - Scroll direction: 'up' (previous section) or 'down' (next section)
+         * 
+         * Algorithm:
+         * 1. Find the currently most-visible section by calculating visible height percentage
+         * 2. Determine next/previous index based on direction parameter
+         * 3. Clamp index to valid range [0, sectionsIds.length - 1]
+         * 4. Scroll to the target section via scrollToId()
+         * 
+         * Visible Height Calculation:
+         * - rect.bottom: section's bottom edge position (relative to viewport)
+         * - window.innerHeight: viewport height
+         * - rect.top: section's top edge position (relative to viewport)
+         * - Formula: Math.min(bottom, viewport) - Math.max(top, 0)
+         *   This accounts for partially visible sections above/below viewport
+         */
         function scrollToSection(direction) {
             let currentIdx = 0;
             let maxVis = 0;
+            
+            // Find section with largest visible height in viewport
             sectionsIds.forEach((id, idx) => {
                 const el = document.getElementById(id);
                 const rect = el.getBoundingClientRect();
+                // Calculate visible portion of section within viewport bounds
                 const visibleHeight = Math.min(rect.bottom, window.innerHeight) - Math.max(rect.top, 0);
                 if (visibleHeight > maxVis) {
                     maxVis = visibleHeight;
                     currentIdx = idx;
                 }
             });
+            
+            // Calculate next index based on direction, with boundary checks
             let nextIdx = direction === 'down' ? currentIdx + 1 : currentIdx - 1;
-            if (nextIdx < 0) nextIdx = 0;
-            if (nextIdx >= sectionsIds.length) nextIdx = sectionsIds.length - 1;
+            if (nextIdx < 0) nextIdx = 0;                              // Prevent scrolling above hero
+            if (nextIdx >= sectionsIds.length) nextIdx = sectionsIds.length - 1;  // Prevent scrolling below contact
             scrollToId(sectionsIds[nextIdx]);
         }
 
+        /**
+         * IntersectionObserver Configuration and Callback
+         * 
+         * Purpose:
+         * - Watches all page sections for viewport visibility changes
+         * - Triggers fade-in animations when sections become visible
+         * - Updates progress bar (right sidebar) to highlight current section
+         * - Triggers staggered floating animations for specific sections
+         * 
+         * Threshold:
+         * - 0.4 means section must be 40% visible to trigger callback
+         * - Balances responsiveness with performance (early trigger for smooth loading)
+         */
         const observerOptions = { threshold: 0.4 };
         const observer = new IntersectionObserver((entries) => {
             entries.forEach(entry => {
+                // Only process sections that are becoming visible (intersection started)
                 if (entry.isIntersecting) {
                     const id = entry.target.id;
+                    
+                    // Trigger fade-in animation for section container
+                    // Adds 'is-visible' class (CSS: opacity 0→1, translateY 20px→0)
                     const container = entry.target.querySelector('.fade-in-section');
                     if (container) container.classList.add('is-visible');
+                    
+                    // Update progress bar: highlight segment matching current section
                     document.querySelectorAll('.progress-segment').forEach(seg => {
                         seg.classList.toggle('active', seg.getAttribute('data-target') === id);
                     });
+                    
+                    // Trigger staggered floating-up animation for key sections
+                    // Elements animate with delays: title (0s), desc (0.2s), grid (0.4s)
+                    // Applies to programming, graphics, and art sections only
+                    // Contact and hero sections use standard fade-in instead
+                    if (id === 'programming' || id === 'graphics' || id === 'art') {
+                        const sectionTitle = entry.target.querySelector('.section-title');
+                        const sectionDesc = entry.target.querySelector('.section-desc');
+                        const skillsGrid = entry.target.querySelector('.skills-grid');
+                        if (sectionTitle) sectionTitle.classList.add('float-up');    // 0s delay
+                        if (sectionDesc) sectionDesc.classList.add('float-up');      // 0.2s delay
+                        if (skillsGrid) skillsGrid.classList.add('float-up');        // 0.4s delay
+                    }
                 }
             });
         }, observerOptions);
 
+        /**
+         * Attach observer to all sections in the page.
+         * Observer begins watching immediately after attachment;
+         * callback fires for visible sections within 300ms.
+         */
         sectionsIds.forEach(id => {
             observer.observe(document.getElementById(id));
         });
 
         // --- SCROLL EFFECT: ZOOM & FADE ---
+        /**
+         * Parallax zoom and fade effect on sections during scroll.
+         * Creates depth perception by scaling and fading out sections that scroll upward past viewport.
+         * 
+         * Effect:
+         * - Sections above viewport are scaled up (1.0 → 1.77+ at max scroll)
+         * - Opacity fades from 1.0 → 0.0 over 60% of viewport height scrolled
+         * - Creates "receding into distance" visual effect
+         * - Improves sense of depth and motion during vertical scroll
+         * 
+         * Performance:
+         * - Runs on every scroll event (throttling could improve performance on mobile)
+         * - Uses requestAnimationFrame for smooth updates (runs at monitor refresh rate)
+         * - Only applies transform/opacity to sections above viewport (rect.top < 0)
+         * 
+         * Math:
+         * - distance = absolute value of section's top position (how far above viewport)
+         * - scale = 1 + distance * 0.00077 (grows ~0.77% per viewport pixel scrolled)
+         * - opacity = 1 - (distance / (window.innerHeight * 0.6))
+         *   (fades completely over 60% of viewport height)
+         */
         window.addEventListener('scroll', () => {
             document.querySelectorAll('section').forEach(sec => {
                 const container = sec.querySelector('.container');
-                if (!container) return;
+                if (!container) return;  // Skip sections without container
+                
                 const rect = sec.getBoundingClientRect();
+                
+                // Apply effect to sections that have scrolled above the viewport
                 if (rect.top < 0) {
-                    const distance = Math.abs(rect.top);
-                    const scale = 1 + (distance * 0.0009); 
-                    const opacity = 1 - (distance / (window.innerHeight * 1.1)); 
+                    const distance = Math.abs(rect.top);  // Distance above viewport top
+                    const scale = 1 + (distance * 0.00077);  // Zoom factor (scale up)
+                    const opacity = 1 - (distance / (window.innerHeight * 0.6));  // Fade factor
+                    
+                    // Apply transforms without CSS transitions (immediate, frame-based animation)
                     container.style.transition = 'none';
                     container.style.transform = `scale(${scale})`;
-                    container.style.opacity = Math.max(0, opacity);
+                    container.style.opacity = Math.max(0, opacity);  // Clamp opacity to [0, 1]
                 } else {
+                    // Reset transforms for sections not yet scrolled past
                     container.style.transform = '';
                     container.style.opacity = '';
-                    container.style.transition = ''; 
+                    container.style.transition = '';
                 }
             });
         });
 
-        // --- CAROUSEL AUTO-ROTATION ---
-        function initCarousel(id) {
-            let idx = 0;
-            const container = document.getElementById(id);
-            if (!container) return;
-            const slides = container.querySelectorAll('.carousel-slide');
-            setInterval(() => {
-                slides[idx].classList.remove('active');
-                slides[idx].style.opacity = '0';
-                idx = (idx + 1) % slides.length;
-                slides[idx].classList.add('active');
-                slides[idx].style.opacity = '1';
-            }, 4000);
-        }
-
+        // Initialize carousels for graphics and art sections
         initCarousel('carousel-graphics');
         initCarousel('carousel-art');
+
+        // --- CAROUSEL AUTO-ROTATION ---
+        /**
+         * Auto-rotating carousel/slide show functionality.
+         * Cycles through slide images every 4 seconds with fade transition.
+         * 
+         * @param {string} id - ID of carousel container element
+         * 
+         * HTML Structure Expected:
+         * ```
+         * <div id="{id}" class="carousel">
+         *   <div class="carousel-slide"><img ... /></div>
+         *   <div class="carousel-slide"><img ... /></div>
+         *   ...
+         * </div>
+         * ```
+         * 
+         * Behavior:
+         * - Rotates through slides continuously with 4000ms interval (4 seconds per slide)
+         * - Starts with first slide visible (index 0)
+         * - Uses opacity (0 ↔ 1) for fade transition (CSS handles visual effect)
+         * - Removes 'active' class and sets opacity to 0 before advancing
+         * - Adds 'active' class and sets opacity to 1 when displaying next slide
+         * - Loops infinitely: when reaching last slide, wraps back to first
+         * 
+         * CSS Dependencies:
+         * - Assumes .carousel-slide elements have opacity transitions defined in CSS
+         * - Initial state should have first slide with opacity 1 and 'active' class
+         * 
+         * Note:
+         * - No pause on hover; carousel continues rotating regardless of user interaction
+         * - Each carousel runs independently with its own setInterval timer
+         */
+        function initCarousel(id) {
+            let idx = 0;  // Current slide index
+            const container = document.getElementById(id);
+            if (!container) return;  // Exit if carousel element not found
+            
+            const slides = container.querySelectorAll('.carousel-slide');
+            if (slides.length === 0) return;  // Exit if no slides present
+            
+            // Start rotation timer: advance to next slide every 4 seconds
+            setInterval(() => {
+                // Hide current slide
+                slides[idx].classList.remove('active');
+                slides[idx].style.opacity = '0';
+                
+                // Advance to next slide (with wraparound)
+                idx = (idx + 1) % slides.length;  // % operator wraps to 0 after last slide
+                
+                // Show next slide
+                slides[idx].classList.add('active');
+                slides[idx].style.opacity = '1';
+            }, 4000);  // 4000ms = 4 second interval
+        }
+
+        // --- INITIALIZE ON PAGE LOAD ---
+        /**
+         * Application initialization function.
+         * Sets up the interactive particle system and language preferences on page load.
+         * Runs once during DOMContentLoaded or immediately if DOM is already ready.
+         * 
+         * Initialization Steps:
+         * 1. Create ParticleSystem singleton instance (desktop/tablet only, not on mobile)
+         *    - Spawns canvas element with 500 twinkling stars
+         *    - Attaches mouse event listeners for repulsion physics
+         *    - Starts 60fps animation loop
+         *    - Device detection: Only initializes if screen width > 768px (excludes phones)
+         * 
+         * 2. Restore saved language preference
+         *    - Retrieves language from localStorage (set by previous visitor via switchLanguage)
+         *    - Defaults to Polish ('pl') if no preference saved (first visit or localStorage cleared)
+         * 
+         * 3. Apply language to UI
+         *    - Calls switchLanguage() to update all text elements
+         *    - Triggers typewriter animation for hero title/description
+         * 
+         * Timing:
+         * - Executes after full DOM is available (elements accessible via getElementById)
+         * - Must run before user interactions (scroll, clicks, language buttons)
+         * - Defers expensive initialization (ParticleSystem animation) to maintain perceived performance
+         * 
+         * Mobile Optimization:
+         * - ParticleSystem requires consistent 60fps animation and event listeners
+         * - Disabled on mobile (screen width ≤ 768px) to preserve battery and reduce CPU usage
+         * - Canvas element itself is hidden via CSS @media query as secondary safety measure
+         */
+        function initializeApp() {
+            // Initialize particle system only on desktop/tablet screens (width > 768px)
+            // Prevents performance drain and battery usage on mobile devices
+            // 768px breakpoint commonly used to distinguish tablets from phones
+            if (window.innerWidth > 768) {
+                // Create and initialize the particle animation system (singleton)
+                // Manages canvas, event listeners, and animation loop
+                new ParticleSystem('particle-canvas');
+            }
+
+            // Restore user's language preference from localStorage
+            // Falls back to Polish ('pl') if no preference stored (new visitor)
+            const lang = localStorage.getItem('language') || 'pl';
+            
+            // Apply language to entire UI and trigger animations
+            switchLanguage(lang);
+        }
+
+        /**
+         * DOM readiness check and initialization trigger.
+         * 
+         * Two paths to initialization:
+         * 1. If DOM is still loading: Attach DOMContentLoaded event listener
+         *    - Waits for HTML parsing to complete
+         *    - Ensures all elements defined in HTML are accessible
+         * 
+         * 2. If DOM is already ready: Call initializeApp() immediately
+         *    - Handles case where script loads after HTML parsing (rare in modern markup)
+         *    - Prevents duplicate initialization
+         * 
+         * Variants of document.readyState:
+         * - 'loading': HTML still being parsed
+         * - 'interactive': HTML parsed, DOM ready (before external resources loaded)
+         * - 'complete': Page fully loaded (all resources, images, etc.)
+         * 
+         * Using 'loading' check is more robust than waiting for 'complete',
+         * as it initializes earlier without blocking on non-critical resources.
+         */
+        if (document.readyState === 'loading') {
+            // DOM not ready yet; wait for DOMContentLoaded event
+            document.addEventListener('DOMContentLoaded', initializeApp);
+        } else {
+            // DOM already ready; initialize immediately
+            initializeApp();
+        }
     </script>
 </body>
 </html>
